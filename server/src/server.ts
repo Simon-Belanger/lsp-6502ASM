@@ -14,7 +14,9 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	MarkupContent,
+	MarkupKind,
 } from 'vscode-languageserver/node';
 
 import {
@@ -55,7 +57,8 @@ connection.onInitialize((params: InitializeParams) => {
 			// Tell the client that this server supports code completion.
 			completionProvider: {
 				resolveProvider: true
-			}
+			},
+			hoverProvider: true
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -221,6 +224,18 @@ connection.onCompletionResolve(
 		return item;
 	}
 );
+
+// This handler provides hover information
+connection.onHover((params) => {
+    const content: MarkupContent = {
+        kind: MarkupKind.Markdown,
+        value: `#This is a hover`,
+    };
+
+    return {
+        contents: content,
+    };
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
